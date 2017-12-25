@@ -1,0 +1,15 @@
+### 无锁 CAS compare and swap
+依赖现代处理器支持原子化的CAS指令来实现,使用字段偏移量在内存中访问到对应字段,在根据期望值和新值来修改;(依赖Unsafe类的本地方法compareAndSwapXXX,使用指针操作);
+
+Unsafe类无法在有classloader情况下使用,而rt.jar中的类由Bootstarp类加载器加载,Bootstarp不是java类,不需要加载器,因此也没有classLoader的java对象,所以当一个类的类加载为null时,说明是由Bootstrap加载,极有可能是rt.jar中的类,所以可以使用Unsafe类。(这有可能是类加载机制使用双亲委派机制的原因,优先让类库中的类由更高层的加载器来加载)
+
+### CAS逻辑上的不足
+比较是数据被修改了2次,改回了原值,则无法判断是否被修改过。
+
+特别是AtomicReference无锁对象引用的限制,是否能修改对象,不完全取决于当前值。
+
+因此,应该使用AtomicStampedReference,带时间戳的无锁对象引用,注意value和timestamp都需要自己更新
+
+AtomicIntegerArray,数组也能无锁,针对具体下标的元素的CAS操作
+
+AtomicXXXFieldUpater,XXX分别代表Integer、Long、Reference,针对普通变量的无锁工具类,只能修改可见范围内变量,变量必须是volatile,不支持static字段,但是暂时不是很清楚应用场景上跟其他的原子类有什么差别,

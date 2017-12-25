@@ -9,6 +9,12 @@ pages:
   - 概览: 'index.md'
   - Java基础: 
     - API拾遗: 'java/base/java_base.md'
+    - 锁: 'java/base/lock.md'
+    - 线程池: 'java/base/threadpool.md'
+    - 线程池扩展: 'java/base/threadpoolextensional.md'
+    - 锁优化: 'java/base/lockoptimal.md'
+    - 本地线程: 'java/base/threadlocal.md'
+    - 无锁: 'java/base/cas.md'
   - Java框架:
     - Spring: 
       - 综合: 'java/spring/spring.md'
