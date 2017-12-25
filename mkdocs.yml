@@ -1,10 +1,20 @@
-site_name: avalony
+site_name: Avalony
 site_description: avalony的学习笔记
 theme: 
   name: 'material'
   palette:
-    primary: 'Blue Grey'
-    accent: 'Grey'
+    primary: 'Teal'
+    accent: 'Red'
+  font:
+    text: 'Ubuntu'
+    code: 'Ubuntu Mono'
+  language: 'zh'
+  logo:
+    icon: 'accessibility'
+  extra:
+    search:
+      language: 'en, zh'
+      tokenizer: '[\s\-\.]+'  
 pages:
   - 概览: 'index.md'
   - Java基础: 
