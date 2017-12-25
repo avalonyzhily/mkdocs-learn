@@ -1,0 +1,29 @@
+site_name: avalony
+site_description: avalony的学习笔记
+theme: 
+  name: 'material'
+  palette:
+    primary: 'Blue Grey'
+    accent: 'Grey'
+pages:
+  - 概览: 'index.md'
+  - Java基础: 
+    - API拾遗: 'java/base/java_base.md'
+  - Spring:
+    - Spring相关: 'java/spring/spring.md'
+    - SpringMvc相关: 'java/spring/springmvc.md'
+  - Spring-boot: 
+    - comprehensive: 'java/spring/boot/comprehensive.md'
+    - 静态资源的问题: 'java/spring/boot/static-content.md'
+  - Spring-cloud: 
+    - comprehensive: 'java/spring/cloud/comprehensive.md' 
+    - eureka: 'java/spring/cloud/eureka.md'
+    - zuul: 'java/spring/cloud/zuul.md'
+    - ribbon: 'java/spring/cloud/ribbon.md'
+    - feign: 'java/spring/cloud/feign.md'
+    - hystrix: 'java/spring/cloud/hystrix.md'
+  - 构建工具:
+    - maven拾遗: 'java/tools/maven.md'
+  - 前端:
+    - react: 'web/react.md'
+    - es恶补: 'web/es.md'
