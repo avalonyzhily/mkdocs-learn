@@ -9,3 +9,6 @@ zuul内置hystrix用于服务熔断和降级,因此需要注意hystrix的超时�
 和RequestUtils.isZuulServletRequest()方法来判断请求处理的源头
 2. DispatcherServlet：主要负责处理由外部发起的http请求(除了/zuul/*这个路径)
 3. ZuulServlet：主要处理/zuul/*路径的请求,主要用于处理大文件上传的情况,该路径可以使用zuul.servletPath参数来进行修改
+
+### zuul的忽略服务配置:
+```zuul.ignoredServices``` 可以用来忽略不想路由的服务,可以使用*来做通配符,也可以指定具体的服务名```'XXX' or 'xxx*'```,只能是一个字符串,多个可以用逗号分隔```'XXX,YYY,ZZZ*'```
