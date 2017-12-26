@@ -5,9 +5,6 @@ theme:
   palette:
     primary: 'Teal'
     accent: 'Red'
-  font:
-    text: 'Ubuntu'
-    code: 'Ubuntu Mono'
   language: 'zh'
   logo:
     icon: 'accessibility'
