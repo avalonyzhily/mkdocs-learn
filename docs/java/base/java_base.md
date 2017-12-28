@@ -66,8 +66,8 @@ class FilterAdapter implements Processor{
 3. 内部类向上转型为其父类，则可以阻止依赖类型的编码，以及隐藏实现细节(私有和受保护的内部类实现模个外部公有的接口，外部可以通过接口获得该内部类的实例，但不能向下转型为该内部类)
 
 ### Java8新特性之方法作为参数传递
-1. 方法引用(双冒号)——对象::实例方法,类::静态方法,等同于提供方法参数的lambda表达式,如Math::pow 等同于 (x,y)->Math.pow(x,y);类::实例方法,其第一个参数会作为调用方法的对象,如 String::compareToIgnoreCase 等同于(x,y)->x.compareToIgnoreCase(y)
+1. 方法引用(双冒号)——对象::实例方法,类::静态方法,等同于提供方法参数的lambda表达式,如Math::pow 等同于 (x,y)->Math.pow(x,y);类::实例方法,其第一个参数会作为调用方法的对象,如 String::compareToIgnoreCase 等同于(x,y)->x.compareToIgnoreCase(y);
 
 2. 函数式接口——有很多类型(java.util.function包下),用于接收函数或lambda表达式,这里不能将函数视为对象,因为函数并不是继承Object的。
 
-3. lambda表达式可以转换成函数式接口
+3. lambda表达式可以转换成函数式接口; 方法引用同样也会转换为函数式接口的实例,在重载问题上,会根据对应函数式接口的方法参数来匹配
