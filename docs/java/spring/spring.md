@@ -237,3 +237,36 @@ public class AsyncConfig {
 4. ```@Async("otherExecutor")``` 这个配置就是指定一个Executor的bean,即自定义执行器配置,默认是用的```SimpleAsyncTaskExecutor```这个没有复用线程,没有控制线程数,会有性能问题
 
 5. 有Future返回的异步方法,管理异常很简单,在Future对象调用get()方法时可以拿到异常信息;但是没有返回的异步方法,则需要定义相应的AsyncUncaughtExceptionHandler来处理(可以通过```AsyncConfigurer ```或XML标签)
+
+### spring提供了XML中的task标签来定义执行器和定时任务
+```<task:executor/>``` 用于定义ThreadPoolTaskExecutor的bean
+```<task:scheduler/>``` 用于定义ThreadPoolTaskScheduler的bean
+```<task:scheduled-tasks>``` 用于定义指定ThreadPoolTaskScheduler中具体要执行的任务
+
+### Quartz作为作业调度框架可以实现更复杂的场景
+1. 主要使用```Trigger```, ```Job``` 和 ```JobDetail``` 三个对象来识别各种类型的任务
+
+2. ```JobDetailFactoryBean```只能定义类级别的job/jobDetail,需要继承QuartzJobBean,实现executeInternal方法(即实际要执行的方法)
+
+3. ```MethodInvokingJobDetailFactoryBean```可以定义到方法级别的job/jobDetail,指定目标类和目标方法
+
+4. 用```SimpleTriggerFactoryBean```或```CronTriggerFactoryBean```定义```Trigger```,并绑定各自的job/jobDetail。
+
+5. 最终由```SchedulerFactoryBean```定义bean,来激活任务调用
+
+### ExceptionHander定义异常处理方法的注解
+```
+@ExceptionHandler(Throwable.class)
+public void exceptionHander(){
+    Thread.setDefaultUncaughtExceptionHandler(
+        (thread,err)->{
+
+        }
+    );
+    Thread.currentThread().setUncaughtExceptionHandler(
+        (thread,err)->{
+            
+        }
+    )
+}
+```
