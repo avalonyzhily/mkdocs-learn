@@ -49,6 +49,22 @@ Connection是真实的tcp连接,连接到rabbitmq server
 
 channel则是tcp连接之上的虚拟连接,目的是为了避免tcp连接打开关闭的开销,同时可以增加数据传输的效率
 
-### exchange
-三种模式:direct(直传), topic(主题) 和fanout(广播)
-可以通过exchange来发送消息,不指定route_key的情况下
+### exchange route_key queue bindings
+三种模式:direct(路由), topic(主题) 和fanout(广播)
+
+direct:routeKey的完全匹配(即生产方指定的routeKey和消费方的routeKey完全一样),一个队列可以监听多个routeKey(同一个queue多次bind不同的routeKey),多个队列也可以监听一个routeKey(多个queue绑定同一个routeKey)
+
+fanout:忽略routeKey的匹配,将消息发送到所有bind的队列中去(不论是否显式指定routeKey)
+
+topic:主题模式的routeKey可以使用正则模式进行匹配,如果仅使用*或#,则类似fanout接受所有的消息;如果明确指定routeKey字符串,则类似direct。
+>注意,同一条消息的对于同一个queue,即使消息routeKey匹配到2个监听的routeKey,也只会发送一次,不会重复。
+
+queue和exchange通过binding进行关联,这是channel的一个queue_bind方法,提供exchange的名字和队列的名字,以及routeKey,即可进行绑定。
+
+routeKey用于指定消息通过exchange(一般是默认)发送到哪个queue,不显式的指定则与queue的名字相同,这个前提是exchange与queue进行了绑定,因为默认的exchange是默认存在，且与所有队列绑定的,因此不用显式的声明和绑定;如果使用了没有绑定queue的exchange,则发送的消息会丢失;routeKey的匹配机制与exchange的模式有关系。
+
+routeKey的格式(topic模式),以"."号分割字符,其中有2个特殊字符——"*"代表任意一个单词,"#"代表任意的0个或多个单词。
+
+队列声明时exclusive参数为True,代表是排他队列,当该队列对应的Consumer关闭时,排他队列会删除
+
+如果使用exchange向多个queue发送消息,则可以不用再生产侧进行queue的声明,生产方只需要定义exchange,在消费侧要进行exchange、queue的声明以及与exchange的绑定,这样就能一次消息发送到多个队列了。
