@@ -17,3 +17,6 @@
 
 1. 实现HandlerInterceptor接口,构建一个拦截器类
 2. 继承WebMvcConfigurerAdapter(spring boot中关于webmvc默认配置的一个适配器),覆盖addInterceptors方法,使用其参数InterceptorRegistry来添加前面构建的拦截器的实例,并配置拦截路径或不拦截的路径等属性
+
+### Spring Boot的启动类Main方法
+既是启动类,也是配置类。
