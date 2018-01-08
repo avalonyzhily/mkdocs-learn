@@ -107,6 +107,7 @@ java中的String和包装类都是不变模式
 
 ```
 //使用BlockingQueue作为共享内存缓存区
+//BlockingQueue在高并发场景性能不是很优秀,使用无锁的ConcurrentLinkedQueue高并发//场景性能很好,但是缺少Blocking的作用,会瞬间耗尽cpu占用(亲测有效)
 public class PCData {
     private final int intData;
 
@@ -192,29 +193,26 @@ public class TestMain {
         Producer producer1 = new Producer(queue);
         Producer producer2 = new Producer(queue);
         Producer producer3 = new Producer(queue);
-//        Producer producer4 = new Producer(queue);
 
         Consumer consumer1 = new Consumer(queue);
         Consumer consumer2 = new Consumer(queue);
         Consumer consumer3 = new Consumer(queue);
-//        Consumer consumer4 = new Consumer(queue);
 
         ExecutorService executorService = Executors.newCachedThreadPool();
         executorService.execute(producer1);
         executorService.execute(producer2);
         executorService.execute(producer3);
-//        executorService.execute(producer4);
+
         executorService.execute(consumer1);
         executorService.execute(consumer2);
         executorService.execute(consumer3);
-//        executorService.execute(consumer4);
+
 
         Thread.sleep(10*1000);
 
         producer1.stop();
         producer2.stop();
         producer3.stop();
-//        producer4.stop();
 
         Thread.sleep(1000);
 
@@ -222,3 +220,5 @@ public class TestMain {
     }
 }
 ```
+
+### Disruptor 无锁缓存框架
