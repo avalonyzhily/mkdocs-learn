@@ -73,3 +73,152 @@ class FilterAdapter implements Processor{
 3. lambda表达式可以转换成函数式接口; 方法引用同样也会转换为函数式接口的实例,在重载问题上,会根据对应函数式接口的方法参数来匹配
 
 4. 构造引用——类::new
+
+### 饿汉式和懒汉式(同步)单例的结合
+```
+/*
+私有静态内部类,屏蔽外部的访问,又利用JVM类初始化机制创建单例
+*/
+public class StaticSingleton{
+    private StaticSingleton(){
+        //....
+    }
+
+    private static class SingletonHolder{
+        private static StaticSingleton instance = new StaticSingleton()
+    }
+
+    public static StaticSingleton getInstance(){
+        return SingletonHolder.instance;
+    }
+}
+```
+
+### 不变模式天生支持多线程,却是通过回避并发问题来实现的，并不是解决
+不变模式只是对象创建后就不会改变,不论是外部操作还是对象本身的操作(与只读不同,只读并不控制对象本身的操作)
+
+java中的不变模式实现,finanl修饰类和属性,属性私有,去除setter,拥有创建完整对象的构造,还要确保没有子类可以重载修改方法(final修饰类)。
+
+java中的String和包装类都是不变模式
+
+
+### 生产者-消费者模式
+生产者线程与消费者线程通过共享内存缓存区(譬如:BlockingQueue)来通信,而不直接通信。
+
+```
+//使用BlockingQueue作为共享内存缓存区
+public class PCData {
+    private final int intData;
+
+    public PCData(int intData) {
+        this.intData = intData;
+    }
+
+    public PCData(String intData) {
+        this.intData = Integer.valueOf(intData);
+    }
+
+    public int getIntData() {
+        return intData;
+    }
+}
+
+
+public class Producer implements Runnable {
+    private volatile boolean isRunning = true;
+    private BlockingQueue<PCData> queue;
+    private AtomicInteger count = new AtomicInteger();
+    private static final int SLEEPING = 1000;
+
+    public Producer(BlockingQueue<PCData> queue) {
+        this.queue = queue;
+    }
+
+    @Override
+    public void run() {
+        PCData pcData = null;
+        Random random = new Random();
+        System.out.println("start producer---id="+Thread.currentThread().getId());
+        try {
+            while (isRunning){
+                Thread.sleep(random.nextInt(SLEEPING));
+                pcData = new PCData(count.incrementAndGet());
+                System.out.println(pcData+" is put into queue");
+                if(!queue.offer(pcData,2, TimeUnit.SECONDS)){
+                    System.err.println("fail to put pcData : "+pcData);
+                }
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    public void stop(){
+        isRunning = false;
+    }
+}
+
+public class Consumer implements Runnable {
+    private BlockingQueue<PCData> queue;
+    private static final int SLEEPING = 1000;
+    public Consumer(BlockingQueue<PCData> queue) {
+        this.queue = queue;
+    }
+
+    @Override
+    public void run() {
+        System.out.println("start consumer id = "+Thread.currentThread().getId());
+        Random random = new Random();
+        try{
+            while(true){
+                PCData pcData = queue.take();
+                if(null!=pcData){
+                    int re = pcData.getIntData()*pcData.getIntData();
+                    System.out.println(MessageFormat.format("{0}*{1}={2}",pcData.getIntData(),pcData.getIntData(),re));
+                    Thread.sleep(random.nextInt(SLEEPING));
+                }
+            }
+        }catch (InterruptedException e){
+            e.printStackTrace();
+            Thread.currentThread().interrupt();
+        }
+    }
+}
+
+public class TestMain {
+    public static void main(String[] args) throws InterruptedException {
+        BlockingQueue<PCData> queue = new LinkedBlockingQueue<>();
+        Producer producer1 = new Producer(queue);
+        Producer producer2 = new Producer(queue);
+        Producer producer3 = new Producer(queue);
+//        Producer producer4 = new Producer(queue);
+
+        Consumer consumer1 = new Consumer(queue);
+        Consumer consumer2 = new Consumer(queue);
+        Consumer consumer3 = new Consumer(queue);
+//        Consumer consumer4 = new Consumer(queue);
+
+        ExecutorService executorService = Executors.newCachedThreadPool();
+        executorService.execute(producer1);
+        executorService.execute(producer2);
+        executorService.execute(producer3);
+//        executorService.execute(producer4);
+        executorService.execute(consumer1);
+        executorService.execute(consumer2);
+        executorService.execute(consumer3);
+//        executorService.execute(consumer4);
+
+        Thread.sleep(10*1000);
+
+        producer1.stop();
+        producer2.stop();
+        producer3.stop();
+//        producer4.stop();
+
+        Thread.sleep(1000);
+
+        executorService.shutdown();
+    }
+}
+```
