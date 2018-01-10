@@ -36,6 +36,18 @@ pages:
       - ribbon: 'java/spring/cloud/ribbon.md'
       - feign: 'java/spring/cloud/feign.md'
       - hystrix: 'java/spring/cloud/hystrix.md'
+  - 各类链接:
+    - 数据结构: 'links/data_structure.md'
+    - 数据库: 'links/database.md'
+    - 够浪: 'links/golang.md'
+    - Java框架: 'links/java_frame.md'
+    - Java基础: 'links/java.md'
+    - 中间件: 'links/middleware.md'
+    - 开源项目: 'open_source_project.md'
+    - PHP: "links/php.md"
+    - Python: 'links/python.md'
+    - Web端: 'links/web.md'
+    - 其他: 'links/other.md'
   - 构建工具:
     - maven拾遗: 'java/tools/maven.md'
   - 前端:
