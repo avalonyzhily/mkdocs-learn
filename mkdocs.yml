@@ -43,7 +43,7 @@ pages:
     - Java框架: 'links/java_frame.md'
     - Java基础: 'links/java.md'
     - 中间件: 'links/middleware.md'
-    - 开源项目: 'open_source_project.md'
+    - 开源项目: 'links/open_source_project.md'
     - PHP: "links/php.md"
     - Python: 'links/python.md'
     - Web端: 'links/web.md'
