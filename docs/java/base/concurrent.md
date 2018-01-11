@@ -46,7 +46,10 @@ public class TestMain {
  * 排序循环止于 不再发生交换同时当前进行的是偶交换
  */
 public class ParallelTestMain {
-    public static ExecutorService pool = Executors.newCachedThreadPool();
+    //测试用线程池,执行完立即回收线程
+    public static ExecutorService pool = new ThreadPoolExecutor(0, Integer.MAX_VALUE,
+            0L, TimeUnit.SECONDS,
+            new SynchronousQueue<Runnable>());
     public static int exchFlag = 1;
     public static int[] arr;
     public static int getExchFlag() {
@@ -134,4 +137,113 @@ public class InsertSortMain {
 }
 ```
 
-改进 插入排序-->希尔排序,按间隔h分割数组(类似奇偶排序,奇偶排序的间隔h是2)
+改进 插入排序-->希尔排序,按间隔h分割数组(插入排序的h是1)
+```
+/**
+ * 希尔排序串行实现
+ * 利用间隔值h,来跳跃比较交换数据
+ * 此处都是升序排序
+ */
+public class shellSortMain {
+    public static void shellSort(int[] arr){
+        int h = 1;
+        //计算最大的h
+        while (h<=arr.length/3){
+            h = h*3+1;
+        }
+        while (h>0){
+            for(int i=h;i<arr.length;i++){
+                //arr[i]是待插入的值,arr[i-h] / arr[j] 就是前面已经排序的元素
+                if(arr[i]<arr[i-h]){
+                    int temp = arr[i];
+                    int j = i-h;
+                    while (j>=0&&arr[j]>temp){
+                        //这里的循环是为了找到arr[i],也就是temp的插入位置
+                        arr[j+h] = arr[j];
+                        j -= h;
+                    }
+                    arr[j+h] = temp;
+                }
+            }
+            h=(h-1)/3;
+        }
+    }
+
+    public static void main(String[] args){
+        int[] arr = {65,2,9,5,7,1,13,54,3,42};
+        shellSort(arr);
+        System.out.println(Arrays.toString(arr));
+    }
+}
+```
+
+并行版希尔排序
+```
+/**
+ * 奇偶交换排序并行实现
+ * 奇偶排序要成对出现
+ * 排序循环止于 不再发生交换同时当前进行的是偶交换
+ */
+public class ParallelTestMain {
+    //测试用线程池,执行完立即回收线程
+    public static ExecutorService pool = new ThreadPoolExecutor(0, Integer.MAX_VALUE,
+            0L, TimeUnit.SECONDS,
+            new SynchronousQueue<Runnable>());
+    public static int exchFlag = 1;
+    public static int[] arr;
+    public static int getExchFlag() {
+        return exchFlag;
+    }
+
+    public static void setExchFlag(int v) {
+        exchFlag = v;
+    }
+    public static class OddEventSortTask implements Runnable{
+        int i;
+        CountDownLatch latch;
+
+        public OddEventSortTask(int i, CountDownLatch latch) {
+            this.i = i;
+            this.latch = latch;
+        }
+
+        @Override
+        public void run() {
+            if(arr[i] > arr[i+1]){
+                int temp = arr[i];
+                arr[i] = arr[i+1];
+                arr[i+1] = temp;
+                setExchFlag(1);
+            }
+            latch.countDown();
+        }
+
+        public static void pOddEvenSort(int[] arrWaitSort) throws InterruptedException{
+            arr = arrWaitSort;
+            int start = 0;
+            while (getExchFlag() == 1 || start == 1){
+                setExchFlag(0);
+                CountDownLatch latch = new CountDownLatch(arr.length/2-(arr.length%2==0?start:0));
+                for(int i= start;i<arr.length-1;i+=2){
+                    //伪代码 TODO
+                    pool.submit(new OddEventSortTask(i,latch));
+                }
+                latch.await();
+                if(start==0){
+                    start = 1;
+                }else {
+                    start = 0;
+                }
+            }
+        }
+
+        public static void main(String[] args) throws InterruptedException {
+            int[] arr = {65,2,9,5,7,1,13,54,3,42};
+            pOddEvenSort(arr);
+            System.out.println(Arrays.toString(arr));
+
+        }
+    }
+
+}
+```
