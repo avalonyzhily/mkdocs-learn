@@ -26,3 +26,8 @@ AMQP 预定义了14个属性。它们中的绝大多很少会用到。以下几�
 - content_type: 描述mime-type 的encoding。比如设置为JSON编码：设置该property为application/json。
 - reply_to: 一般用来指明用于回调的queue（Commonly used to name a callback queue）。
 - correlation_id: 在请求中关联处理RPC响应（correlate RPC responses with requests）。
+
+### 异步接受消息
+- 实现MessageListener进行消息监听,
+- 基于AMQP协议的可以实现ChannelAwareMessageListener进行消息监听,并提供了扩展的参数Channel进行额外的操作,
+- 使用MessageListenerAdapter适配器,则可以严格的分离应用逻辑和消息处理的api。
