@@ -31,3 +31,16 @@ AMQP 预定义了14个属性。它们中的绝大多很少会用到。以下几�
 - 实现MessageListener进行消息监听,
 - 基于AMQP协议的可以实现ChannelAwareMessageListener进行消息监听,并提供了扩展的参数Channel进行额外的操作,
 - 使用MessageListenerAdapter适配器,则可以严格的分离应用逻辑和消息处理的api。
+
+### 消息转换
+- 消息监听器中的消息转换分两步：
+    - 第一步是常规的消息转换(用的比较多),
+    - 第二步是方法参数的转换(但是通常不会用)
+
+### 消息的响应
+- Spring中提供了一个@SendTo的注解来设置消费者消费消息之后的返回值返回的默认地址
+    - @SendTo的值是一个exchange/routeKey的组合,两项都是非必填
+    - @SendTo的值支持SpEL表达式。。。而且支持运行时的表达式(使用 !{....}的形式),可从以下几个配置中读取：
+        - request - ```the o.s.amqp.core.Message request object.```
+        - source - ```the o.s.messaging.Message<?> after conversion.```
+        - result - ```the method result.```
