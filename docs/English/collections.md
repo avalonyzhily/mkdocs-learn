@@ -1,1 +1,2 @@
-- As far as the Exchange name is concerned ：就交换机的名字而言
+- As far as the Exchange name is concerned/就交换机的名字而言
+- infer/推断,猜想;the inferred type/推断类型

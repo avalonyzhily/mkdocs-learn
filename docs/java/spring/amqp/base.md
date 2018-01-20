@@ -36,6 +36,8 @@ AMQP 预定义了14个属性。它们中的绝大多很少会用到。以下几�
 - 消息监听器中的消息转换分两步：
     - 第一步是常规的消息转换(用的比较多),
     - 第二步是方法参数的转换(但是通常不会用)
+- 消息的转换通常不推荐使用java的序列化,而是推荐使用JSON对象来进行转换,这样就保证了语言的无关性(Spring-amqp则推荐使用```Jackson2JsonMessageConverter```来转换消息,用于替换默认的```SimpleMessageConverter ```)
+    - ```Jackson2JsonMessageConverter```可以配置自定义的```ClassMapper```,但是也配置了默认的```DefaultClassMapper```,```DefaultClassMapper```通过```MessageProperties```中的类型信息来完成类型转化,但是如果其中没有类型信息,但是你知道该消息的预期类型,则可以配置```DefaultClassMapper```的```defaultType```属性。
 
 ### 消息的响应
 - Spring中提供了一个@SendTo的注解来设置消费者消费消息之后的返回值返回的默认地址
