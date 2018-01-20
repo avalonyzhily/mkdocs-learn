@@ -44,3 +44,9 @@ AMQP 预定义了14个属性。它们中的绝大多很少会用到。以下几�
         - request - ```the o.s.amqp.core.Message request object.```
         - source - ```the o.s.messaging.Message<?> after conversion.```
         - result - ```the method result.```
+
+### 消息监听器相关
+- 注解创建消息监听器不会注册到应用的上下文,但是可以通过```RabbitListenerEndpointRegistry```这个bean来获取;
+- ```RabbitListenerEndpointRegistry```的```getListenerContainers()```方法或```getListenerContainer(String id)```分别可以获取所有的监听器或某个id的监听器
+- ```RabbitListenerEndpointRegistry```的```getListenerContainerIds()```方法可以获取监听器的id;
+- 监听器还可以进行分组
