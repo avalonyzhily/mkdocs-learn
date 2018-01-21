@@ -52,3 +52,24 @@ AMQP 预定义了14个属性。它们中的绝大多很少会用到。以下几�
 - ```RabbitListenerEndpointRegistry```的```getListenerContainers()```方法或```getListenerContainer(String id)```分别可以获取所有的监听器或某个id的监听器
 - ```RabbitListenerEndpointRegistry```的```getListenerContainerIds()```方法可以获取监听器的id;
 - 监听器还可以进行分组
+
+### mandatory 和 immediate
+1. mandatory标志位
+当mandatory标志位设置为true时，如果exchange根据自身类型和消息routeKey无法找到一个符合条件的queue，那么会调用basic.return方法将消息返还给生产者；当mandatory设为false时，出现上述情形broker会直接将消息扔掉。
+
+2. immediate标志位
+当immediate标志位设置为true时，如果exchange在将消息route到queue(s)时发现对应的queue上没有消费者，那么这条消息不会放入队列中。当与消息routeKey关联的所有queue(一个或多个)都没有消费者时，该消息会通过basic.return方法返还给生产者。
+
+总结：
+- mandatory标志告诉服务器至少将该消息route到一个队列中，否则将消息返还给生产者;
+- immediate标志告诉服务器如果该消息关联的queue上有消费者，则马上将消息投递给它，如果所有queue都没有消费者，直接把消息返还给生产者，不用将消息入队列等待消费者了。
+
+### AMQP还有实现RPC的能力
+- client使用```AmqpProxyFactoryBean```
+    - 通过```serviceInterface```输入任何bean(使用接口的形式),然后调用获取结果,该接口的实际实现在server端
+- sever端使用```AmqpInvokerServiceExporter```
+    - 同样使用```serviceInterface```属性来配置bean的接口,同时要通过```service```属性配置接口的实现
+通过上面的方式可以完成RPC的实现(像本地方法一样调用远程的方法)
+
+### 临时队列的生成
+- 推荐使用```AnonymousQueue```来创建唯一的排他的自动删除的队列,这样比让broker去创建(比如传入""字符串作为队列名)更好,更具有可控性
