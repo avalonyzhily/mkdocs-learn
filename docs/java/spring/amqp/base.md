@@ -73,3 +73,11 @@ AMQP 预定义了14个属性。它们中的绝大多很少会用到。以下几�
 
 ### 临时队列的生成
 - 推荐使用```AnonymousQueue```来创建唯一的排他的自动删除的队列,这样比让broker去创建(比如传入""字符串作为队列名)更好,更具有可控性
+
+
+### amqp事务
+- spring-rabbit框架支持自动的事务管理,其中有2个方式将事务语义提供给框架
+    - 不论是那种方法,都要注意channelTransacted设置的开启和关闭,决定外部事务是否生效
+    - rabbitTemplate,在同步的场景中,只要在对rabbitTemplate的各种api进行调用的方法上添加事务注解,即可启用外部事务,统一管理方法内各种操作的提交和回滚(不论是MQ的还是database的);当出现异常时,接收的消息会返回到broker中去,要发送的消息也不会发送;
+    - SimpleMessageListenerContainer,异步的场景中,在构建消息监听器时,传入PlatformTransactionManager接口的实现,同时开启channelTransacted设置,这样就可以通过外部事务进行统一的提交和回滚;;当出现异常时,接收的消息会返回到broker中去,要发送的消息也不会发送。
+    - 这也是1阶段提交的一个最佳实现,是强大的可靠消息模式。
