@@ -81,3 +81,4 @@ AMQP 预定义了14个属性。它们中的绝大多很少会用到。以下几�
     - rabbitTemplate,在同步的场景中,只要在对rabbitTemplate的各种api进行调用的方法上添加事务注解,即可启用外部事务,统一管理方法内各种操作的提交和回滚(不论是MQ的还是database的);当出现异常时,接收的消息会返回到broker中去,要发送的消息也不会发送;
     - SimpleMessageListenerContainer,异步的场景中,在构建消息监听器时,传入PlatformTransactionManager接口的实现,同时开启channelTransacted设置,这样就可以通过外部事务进行统一的提交和回滚;;当出现异常时,接收的消息会返回到broker中去,要发送的消息也不会发送。
     - 这也是1阶段提交的一个最佳实现,是强大的可靠消息模式。
+- 对于官网文档苦于语言障碍可能还需要细致正确的理解。
