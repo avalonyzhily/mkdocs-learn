@@ -1,2 +1,3 @@
 - As far as the Exchange name is concerned/就交换机的名字而言
 - infer/推断,猜想;the inferred type/推断类型
+- compatible/兼容的,相容的;incompatible/不兼容的,不相容的
