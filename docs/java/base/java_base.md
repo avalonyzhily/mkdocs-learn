@@ -268,3 +268,30 @@ FutureTask 集成了两者,开启新的线程去执行Callable产生结果,并�
 
 ### Stream
 - 数组也可以转换为Stream流,使用Stream.of()静态方法
+
+### 使用Stream 实现同时处理多个流的简单示例
+- 早期的jdk1.8有zip方法接受2个流以及一个zipper方法来按顺序依次处理2个流的元素,但是正式版本被忽略了。
+- 以下是交替从2个流中获取元素,直到其中一个流结束,将结果置于一个新的流的一个示例,注意最后几行代码的含义,暂时还不清楚，
+    ```
+    // 该方法支持无限流
+    private static Stream<String> testZip(Stream<String> a, Stream<String> b) {
+        Iterator<String> aI = a.iterator();
+        Iterator<String> bI = b.iterator();
+        Iterator<String> c = new Iterator<String>() {
+            private boolean aEl = false;
+            @Override
+            public boolean hasNext() {
+                aEl = !aEl;
+                return aEl?aI.hasNext() : bI.hasNext();
+            }
+
+            @Override
+            public String next() {
+                return aEl?aI.next():bI.next();
+            }
+        };
+        Iterable<String> res = ()->c;
+        boolean parallel = a.isParallel() || b.isParallel();
+        return StreamSupport.stream(res.spliterator(),parallel);
+    }
+    ```
