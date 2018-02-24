@@ -106,7 +106,7 @@ public class ParallelTestMain {
 
 }
 ```
-
+### 插入排序的改造
 插入排序:从未排序部分选择一个元素插入到已排序部分,直到未排序部分元素个数为0
 ```
 public class InsertSortMain {

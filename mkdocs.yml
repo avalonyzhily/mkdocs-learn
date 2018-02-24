@@ -15,14 +15,14 @@ theme:
 pages:
   - 概览: 'index.md'
   - Java基础: 
-    - API拾遗: 'java/base/java_base.md'
+    - 综合: 'java/base/java_base.md'
     - 锁: 'java/base/lock.md'
     - 线程池: 'java/base/threadpool.md'
     - 线程池扩展: 'java/base/threadpoolextensional.md'
     - 锁优化: 'java/base/lockoptimal.md'
     - 本地线程: 'java/base/threadlocal.md'
     - 无锁: 'java/base/cas.md'
-  - Java框架:
+  - Java进阶:
     - Spring: 
       - 综合: 'java/spring/spring.md'
       - SpringMvc: 'java/spring/springmvc.md'
@@ -30,7 +30,7 @@ pages:
       - 综合: 'java/spring/boot/comprehensive.md'
       - 静态资源的问题: 'java/spring/boot/static-content.md'
     - Spring-cloud: 
-      - comprehensive: 'java/spring/cloud/comprehensive.md' 
+      - 综合: 'java/spring/cloud/comprehensive.md' 
       - eureka: 'java/spring/cloud/eureka.md'
       - zuul: 'java/spring/cloud/zuul.md'
       - ribbon: 'java/spring/cloud/ribbon.md'
