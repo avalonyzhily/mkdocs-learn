@@ -26,3 +26,16 @@
     - 处于prepare阶段的事务,如果遇到数据库异常,恢复后事务仍存在,但是事务提交不会记录到binlog,影响之后的容灾和数据恢复
     - 如果有分支事务失败,会自动回滚,但是如果该分支已经到达prepare阶段,则其他分支事务可能已经提交,其他事务不会回滚导致事务不完整
     - prepare状态的分支事务不会记录到binlog,因此是无法通过binlog恢复的
+
+### mysq的SQL MODE
+- 严格模式可以提供比较好的数据校验功能,譬如TRADITIONAL、STRICT_TRANS_TABLES
+- 多种模式可以灵活组合，组合后的模式可以更好地满足应用程序的需求。尤其在数据迁移中，SQL Mode 的使用更为重要
+
+### mysql sql 优化
+- 通过show status查看各类sql的执行频率
+    - 有Com_xxx,提供xxx对应语句的执行次数,每执行一次累加1
+    - 针对innodb引擎有Innodb_rows_xxx,用来统计xxx对应的语句影响的行数
+    - Connections 代表视图连接mysql服务器的次数
+    - Uptime 代表服务器工作时间
+    - Slow_queries 代表慢查询的次数
+- 
