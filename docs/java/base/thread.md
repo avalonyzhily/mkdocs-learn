@@ -17,7 +17,7 @@ RejectedExecutionHandler handler //拒绝策略,任务过多时的拒绝处理
 ```
 - 其中workQueue分为以下几类
 ```
-SynchronousQueue //直接提交队列,没有容量,任务不会真实保存,每个任务的提交需要一个任务的完成,即总是将新任务提交给线程执行,没有空闲的就创建新线程,如果达到最大值就执行拒绝策略;
+zhilySynchronousQueue //直接提交队列,没有容量,任务不会真实保存,每个任务的提交需要一个任务的完成,即总是将新任务提交给线程执行,没有空闲的就创建新线程,如果达到最大值就执行拒绝策略;
 
 ArrayBlockingQueue //有界任务队列,有容量且必须提供该参数来构造,当前线程数小于corePoolSize时,优先创建新线程;达到corePoolSize后,则优先存储任务,直到装满队列,再根据maximumPoolSize创建新线程,如果线程数大于最大线程数,则执行拒绝策略。有界任务队列试图维持线程池中的线程数在corePoolSize的数量。
 
