@@ -14,6 +14,8 @@ theme:
       tokenizer: '[\s\-\.]+'  
 pages:
   - 概览: 'index.md'
+  - 算法学习:
+    - 记录: 'algorithm/record.md'
   - Java基础: 
     - 综合: 'java/base/java_base.md'
     - 锁: 'java/base/lock.md'
@@ -36,6 +38,9 @@ pages:
       - ribbon: 'java/spring/cloud/ribbon.md'
       - feign: 'java/spring/cloud/feign.md'
       - hystrix: 'java/spring/cloud/hystrix.md'
+  - 数据库笔记: 
+    - mysql: 
+      - 基础: 'database/mysql/base.md'
   - 各类链接:
     - 数据结构: 'links/data_structure.md'
     - 数据库: 'links/database.md'
