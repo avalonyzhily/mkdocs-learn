@@ -19,10 +19,7 @@ pages:
   - Java基础: 
     - 综合: 'java/base/java_base.md'
     - 锁: 'java/base/lock.md'
-    - 线程池: 'java/base/threadpool.md'
-    - 线程池扩展: 'java/base/threadpoolextensional.md'
-    - 锁优化: 'java/base/lockoptimal.md'
-    - 本地线程: 'java/base/threadlocal.md'
+    - 线程: 'java/base/thread.md'
     - 无锁: 'java/base/cas.md'
   - Java进阶:
     - Spring: 
