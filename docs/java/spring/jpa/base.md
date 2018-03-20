@@ -1,4 +1,5 @@
 ### jpa 动态条件查询
+
 - 其实类似hibernate中使用Restrictions构建查询条件的Criterion对象
 - 可以使用Specification来构建查询条件
     - 让Repository继承JpaSpecificationExecutor<T>接口,
