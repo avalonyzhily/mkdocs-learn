@@ -1,9 +1,9 @@
 ### JDK中的线程池支持
-```Executor``` 框架
-```Executors``` 工具类默认提供各种线程池的构建
+- ```Executor``` 框架
+- ```Executors``` 工具类默认提供各种线程池的构建
 - 重点：java8开始提供了一些新的线程池类型,用于并行处理,待学习
 
-```ThreadPoolExecutor``` 是官方提供的线程池的本质
+- ```ThreadPoolExecutor``` 是官方提供的线程池的本质
 ```
 new ThreaPoolExecutor(
 int corePoolSize, //指定线程池中的线程数量

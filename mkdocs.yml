@@ -21,6 +21,7 @@ pages:
     - 锁: 'java/base/lock.md'
     - 线程: 'java/base/thread.md'
     - 无锁: 'java/base/cas.md'
+    - jdk: 'java/base/tool.md'
   - Java进阶:
     - Spring: 
       - 综合: 'java/spring/spring.md'
