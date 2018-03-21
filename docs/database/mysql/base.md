@@ -1,4 +1,5 @@
 ### mysql引擎类型
+
 - 常见的 myisam innodb
     - myisam是最简单的引擎,不支持事务,但是读写速度快,主要依靠3个后缀的文件来实现存储(frm MYD MYI)
     - innodb是常用的引擎,支持事务,支持外键,支持自增列,读写性能相比前者慢一些,有共享表空间和多表空间两种存储方式,但是表结构都是放在.frm后缀的文件中
@@ -7,6 +8,7 @@
     - merge是多张myisam引擎的表的集合
 
 ### mysql的索引
+
 - mysql有唯一索引(BTree,hash等) 全文索引 空间索引几种类型
 - myisam和innodb均使用BTree索引(索引的数据结构),部分版本支持全文索引(fulltext),myisam支持空间索引(spatial)
 - mysql也可以使用前缀索引,即对索引字段的前N个字符创建索引
@@ -20,6 +22,7 @@
     - BTree索引相比Hash索引支持的过滤条件的形式更多。
 
 ### mysql事务控制和锁操作
+
 - DDL语句无法回滚,隐式提交
 - mysql5.0.3以上开始支持分布式事务
     - XA分布式事务,采用2PC,存在一些缺陷
@@ -28,10 +31,12 @@
     - prepare状态的分支事务不会记录到binlog,因此是无法通过binlog恢复的
 
 ### mysq的SQL MODE
+
 - 严格模式可以提供比较好的数据校验功能,譬如TRADITIONAL、STRICT_TRANS_TABLES
 - 多种模式可以灵活组合，组合后的模式可以更好地满足应用程序的需求。尤其在数据迁移中，SQL Mode 的使用更为重要
 
 ### mysql sql 优化
+
 - 通过show status查看各类sql的执行频率
     - 有Com_xxx,提供xxx对应语句的执行次数,每执行一次累加1
     - 针对innodb引擎有Innodb_rows_xxx,用来统计xxx对应的语句影响的行数
@@ -42,6 +47,7 @@
 - 当定位了低效sql之后,就可以使用执行计划来分析sql了,使用explain或desc命令
 
 ### mysql 索引
+
 - 多列索引,必须要有最左列索引字段出现,才会使用索引
 - like查询,只能后模糊(%在后),前模糊(%在前)不使用索引
 - 大文本搜索使用全文索引,不要使用like '%...%'
@@ -51,6 +57,7 @@
 - 通过show status 查询Handler_read_xxx的结果,可以获得索引的使用情况
 
 ### 简单使用的mysql优化
+
 - 定期分析表 ANALYZE TABLE table_name
 - 定义优化表 OPTIMIZE TABLE table_name
 - SQL的优化
@@ -71,6 +78,7 @@
 - 拆分表提高访问效率
 
 ### mysql 锁
+
 - 表锁 开销小,加锁快,不会死锁,但是粒度大,冲突概率高,并发性能低
 - 行锁 开销大,加锁慢,会出现死锁,粒度最小,冲突概率低,并发性能最高
 - 页面锁 折中
@@ -101,6 +109,7 @@
     - 不加锁,数据多版本并发控制(MCC或MVCC)
 
 ### mysql server 参数优化
+
 - table_cache 数据库用户打开表的缓存数量,与 max_connections 有关
 - myisam
     - key_buffer_size 索引块（Index Blocks）缓存的大小;默认的不能删除,但是mysql5.1以后可以设置多个,所有线程共享
@@ -113,3 +122,67 @@
     - innodb_lock_wait_timeout 锁等待的超时时间设置,针对表锁导致的死锁不能自动检测的情况,设置一个等待超时,默认50秒
     - innodb_support_xa mysql分布式事务支持的开关
 - 磁盘的分布I/O优化也可以是myisam引擎收益,但是对于innodb引擎则会起反作用,这时应该选择使用Raw Device裸设备
+
+### mysql 日志
+
+- mysql的错误日志可以用--log-error[=file_name]来指定文件名和存储位置,默认在DATADIR目录下(命名为主机名.err),通过查看这个文件来获取错误日志
+- 二进制日志记录的是DML和DDL语句,但是没有查询语句,语句以事件的形式存储
+    - 可以用--log-bin[=file_name]来指定文件名和存储位置,默认在DATADIR目录下(命名为主机名-bin),通过查看这个文件来获取二进制日志
+    - 二进制日志文件不能直接读取,而是需要使用mysql的工具——mysqlbinlog log-file
+    - 删除日志指令
+        - RESET MASTER 删除所有日志
+        - PURGE MASTER LOGS TO ' mysql-bin.****** '命令，该命令将删除******编号之前的所有日志。
+        - 执行PURGE MASTER LOGS BEFORE 'yyyy-mm-dd hh24:mi:ss'命令，该命令将删除日期为yyyy-mm-dd hh24:mi:ss之前产生的所有日志
+        - 设置参数--expire_logs_days=#，此参数的含义是设置日志的过期天数，过了指定的天数后日志将会被自动删除
+- mysql有独立的查询日志设置--log[=file_name]来指定文件名和存储位置,默认在DATADIR目录下(命名为主机名.log)
+- mysql还有独立的慢查询日志--log-slow-queries[=file_name]来指定文件名和存储位置,默认在DATADIR目录下(命名为主机名-slow.log)
+    - 慢查询的阈值key是long_query_time
+
+### mysql备份和恢复
+
+- 逻辑备份和恢复
+    - mysqldump备份指令
+        - mysqldump [opt] db_name [tables] > xxx.sql //备份指定数据库或其中的一些表到文件
+        - mysqldump [opt] ---database [DB1,DB2,....] > xxx.sql //备份指定数据库到文件
+        - mysqldump [opt] --all--database > xxx.sql //备份所有数据库
+    - mysql恢复
+        - 完全恢复,可以直接只用备份文件恢复，还可以使用mysqlbinlog恢复自备份以来的binlog
+        - 可以基于时间点来回复
+        - 基于位置恢复,精度高于基于时间点,因为同一时间点可能有多个sql语句
+- 物理备份和恢复
+    - 物理备份比逻辑备份更快,基于文件的cp
+    - 冷备份 停掉mysql服务，cp数据文件进行备份和恢复
+    - 热备份 不同的引擎不一样的操作
+        - myisam 
+            - mysqlhotcopy工具
+            - flush table for read 手动给所有表加读锁,然后cp数据文件
+        - innodb 
+            - ibbackup 收费工具,可免费1个月
+- 表的导出
+    - SELECT .. FROM TABLE .. INTO OUTFILE 'FILE_NAME' [opt]
+    - mysqldump target_dir dbname tablename [opt] 导出数据为文本
+- 表的导入
+    - LOAD DATA [LOCAL] INFILE 'filename' INTO TABLE tablename [opt]
+    - mysqlimport [--LOCAL] dbname order_tab.txt [option]
+- PS: 凡是mysql提供的命令行工具,都需要提供数据库连接信息,比如 -u -p这样的,其他的数据库指令则是在数据库提供的命令行操作界面直接使用
+
+### mysqk权限和安全
+
+- 权限系统的两阶段
+    - 对连接用户进行身份认证,合法的通过,不合法的拒绝
+    - 对合法用户,赋予对应的权限,权限内可以对数据库进行操作
+    - mysql使用ip和用户名联合认证用户,联合唯一视为同一个用户
+- 权限信息存储在mysql这个数据库的user、host和db三个表中
+    - 其中user表最重要,分为用户列 权限列 安全列 资源列,db表次之
+    - 合法用户取得权限顺序 user->db->tables_priv->column_priv
+    - 权限范围依次递减,全局权限覆盖局部权限
+- mysql账户的创建可以通过GRANT指令或直接操作授权表,但是推荐使用GRANT指令,不容易出错,GRANT语法如下
+    - GRANT priv_type [ ( column_list ) ] [, priv_type [ (column_list)]]... ON [object_type] {tblname | * | *.* |db_name.*} TO user [IDENTIFIED BY [PASSWORD] 'password'] [, user [IDENTIFIED BY [PASSWORD] 'password']... [WITH GRANT OPTION]
+    - object_type = TABLE | FUNCTION | PROCEDURE
+    - priv_type = 对应user表里面的 'xxx_priv' 列的前缀
+- 查看权限
+    - show grants for user@host
+- 修改权限
+    - GRANT语法同上,不存在的账号则新增,存在则修改
+    - REVOKE语法同GRANT,回收权限
+    - 直接更改权限表
