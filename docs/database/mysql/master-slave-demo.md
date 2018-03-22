@@ -106,3 +106,4 @@
 - 需要配置有管理节点  数据节点 sql节点 
 - 没有记录配置简明的配置方式
 - NDB不是INNODB的集群。
+- 官方文档给出了限制[Known Limitations of NDB Cluster](https://dev.mysql.com/doc/refman/5.7/en/mysql-cluster-limitations.html)

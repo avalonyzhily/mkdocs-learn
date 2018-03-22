@@ -39,6 +39,7 @@ pages:
   - 数据库笔记: 
     - mysql: 
       - 基础: 'database/mysql/base.md'
+      - 进阶: 'database/mysql/master-slave-demo.md'
   - 各类链接:
     - 数据结构: 'links/data_structure.md'
     - 数据库: 'links/database.md'
@@ -56,3 +57,5 @@ pages:
   - 前端:
     - react: 'web/react.md'
     - es恶补: 'web/es.md'
+  - 其他:
+    - 大佬语录: 'something/record-by-venteran.md'
