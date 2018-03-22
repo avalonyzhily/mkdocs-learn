@@ -1,3 +1,8 @@
+### mysql的启动
+
+- 通常用 mysqld_safe 支持很多参数来监控MySQL服务器的运行,部分系统使用mysql.server运行也是调用这个指令脚本
+- 一般不会直接使用mysqld指令直接运行
+
 ### mysql引擎类型
 
 - 常见的 myisam innodb
@@ -171,7 +176,7 @@
 - 权限系统的两阶段
     - 对连接用户进行身份认证,合法的通过,不合法的拒绝
     - 对合法用户,赋予对应的权限,权限内可以对数据库进行操作
-    - mysql使用ip和用户名联合认证用户,联合唯一视为同一个用户
+    - mysql使用ip(连接方的ip,也可以用域名)和用户名联合认证用户,联合唯一视为同一个用户
 - 权限信息存储在mysql这个数据库的user、host和db三个表中
     - 其中user表最重要,分为用户列 权限列 安全列 资源列,db表次之
     - 合法用户取得权限顺序 user->db->tables_priv->column_priv
@@ -184,5 +189,33 @@
     - show grants for user@host
 - 修改权限
     - GRANT语法同上,不存在的账号则新增,存在则修改
-    - REVOKE语法同GRANT,回收权限
+    - REVOKE语法同GRANT,回收权限,但是不能删除用户
     - 直接更改权限表
+- 修改密码
+    - mysqladmin -u username -h hostname password 'xxx'
+    - grant usage on *.* to 'jeffrey'@'%' identified by 'xxxx'
+    - set password = password('xxx') //修改自己的。
+- 删除账号
+    - DROP USER user[,user...]
+
+### mysql 安全问题
+
+- 控制系统账号和权限
+- 避免root用户启动mysql,数据目录设置为mysql用户,用mysql用户启动数据库,可以防止有FILE权限(数据库的权限)的用户使用root通过sql创建文件。
+- 防止dns欺骗,host指定域名时,可能会因为域名对应的ip地址被修改,而出现问题。
+- 数据库安全
+    - 删除匿名帐号,安装时默认创建的空帐户
+    - 给root账户设置密码
+    - 使用安全密码
+    - 只授予账号必要的权限
+    - root账号之外的用户都不应该拥有user表的存取权限
+    - 不要把FILE 、PROCESS  或 SUPER 权限授予管理员以外的账号
+    - LOAD DATA LOCAL  带来的安全问题,--local-infile=0 选项启动 mysqld 从服务器端禁用所有 LOAD DATA LOCAL命令。
+        - 可以任意加载本地的有访问权限的文件
+        - web客户端的用户会通过该功能访问到web服务器上的文件,因为此时mysql服务器的客户端是web服务器
+    -  DROP TABLE不会收回以前关于该表的授权,因此再次创建的同名表,以前的用户会自动赋予该表的权限,造成安全问题
+    -  使用SSL安全连接,最好给用户加上访问IP限制 
+    -  REVOKE  命令的漏洞,单个数据库多次赋予权限会自动合并,但是多个数据库(特别是有重复数据库时),多次赋予权限,会被认为时单独的一组不会合并,因此使用REVOKE回收时会出现遗漏
+    - 其他安全设置选项
+
+
