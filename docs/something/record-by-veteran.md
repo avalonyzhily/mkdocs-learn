@@ -7,3 +7,7 @@
 
 - 使用sql
 - 使用ACID
+
+### 数据库事务 隔离级别 锁分析
+
+- [数据库事务、隔离级别和锁 - by 大宽宽](https://www.jianshu.com/p/cb97f76a92fd)
