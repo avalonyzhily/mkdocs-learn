@@ -21,3 +21,16 @@
   - 多列索引的列顺序很重要,一般来说选择性高的列放在最前
 - mysql innodb的二级索引会包含主键列
 - 索引排序的列只能是第一张表的列
+- innodb_stats_on_metadata参数可以控制索引统计信息更新的开关,关闭该选项,可以有效减少客户端或监控程序以及其他mysql的操作(比如analyze table)带来的索引信息采样行为,减少服务器的负担
+- optimize table可以整理数据,减少索引和数据碎片,提升性能
+
+### mysql查询性能优化
+
+- show full processlist可以查看一个查询的状态,查询的状态在生命周期内会变化很多次,mysql的一个连接相当于一个线程
+  - Sleep 线程等待用户发起请求
+  - Query 线程正在执行查询或者正在将结果发送给客户端
+  - Locked mysql服务器层,该线程正在等待表锁。行锁是存储引擎级别的锁,不会体现在线程状态中
+  - Analyzing and statistics 线程正在收集存储引擎的统计信息,并生成查询计划
+  - Copying to tmp table [on disk] 正在执行查询,并将结果复制到一个临时表(可能临时表会放在磁盘上)
+  - Sorting result 线程在对结果集进行排序
+  - Sending data 状态之间传送数据、生成结果集、往客户端发送数据
