@@ -34,3 +34,5 @@
   - ConcurrentHashMap
     - jdk1.7
     - jdk1.8
+- ThreadMXBean java虚拟机线程管理接口
+  - dumpAllThreads 获取线程信息的方法
