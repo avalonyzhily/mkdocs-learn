@@ -1,0 +1,19 @@
+# oracle 一些分析语句
+
+- 归档日志
+    - 查看归档空间占用率： select * from v$flash_recovery_area_usage
+    - 查看归档日志存放地址： select * from v$recovery_file_dest
+    - 查询所有归档未删除的归档日志: select * from v$archived_log where archived='YES' and deleted='NO'
+- CPU使用
+    - cpu空间及繁忙度: select * from v$osstat
+    - sys的总的分析情况: select * from v$sysstat
+- 内存使用
+    - SGA内存：select * from v$sga
+    - pga内存：select * from v$sgastat
+- 锁信息查询
+    - v$lock
+    - v$locked_object
+- session信息
+    - v$session
+- 表空间相关
+    - select a.a1 "name" ,c.c2 "type",c.c3 "status", b.b2/1024/1024 "totalSize", (b.b2-a.a2)/1024/1024 "usedSize", ROUND((b.b2-a.a2)/b.b2*100,6) "usedRadio" from  (select tablespace_name a1, sum(nvl(bytes,0)) a2 from dba_free_space group by tablespace_name) a, (select tablespace_name b1,sum(bytes) b2 from dba_data_files group by tablespace_name) b, (select tablespace_name c1,contents c2,status c3 from dba_tablespaces) c where a.a1=b.b1 and c.c1=b.b1
