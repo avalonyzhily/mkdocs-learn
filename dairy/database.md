@@ -1,5 +1,8 @@
 # oracle 一些分析语句
 
+- 日志信息
+    - v$log v$logfile
+    - 日志输出在alert_orcl.log中,可在v$data_info里面查看路径
 - 归档日志
     - 查看归档空间占用率： select * from v$flash_recovery_area_usage
     - 查看归档日志存放地址： select * from v$recovery_file_dest
